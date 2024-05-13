@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body{margin:0 auto; background:#F0F0F0;}
+      th{text-align:left;}
+      #log{width:100%;}
+    </style>
+  </head>
+  <body>
+    <label for="log">Drawpile ChatLog to Last Time Active</label>
+    <textarea id="log" name="log" placeholder="Paste chat log here..." rows="10"></textarea>
+    <table><thead><tr><th>Time</th><th>Username</th></tr></thead><tbody id="result"></tbody></table>
+<script>
+function logToArray(log) {
+    return Object.entries(Array.from(log.matchAll(/\n\n\n([^ ]*):.*\n(\d{2}:\d{2})/g), ([_, i, j]) => [i, j]).reduce((m, i) => {n = i[0]; m[n] = i[1]; return m}, {})).sort((a, b) => a[1].localeCompare(b[1]));
+}
+function makeTableHTML(ar) {
+    return `${ar.reduce((c, o) => c += `<tr>${o.reverse().reduce((c, d) => (c += `<td>${d}</td>`), '')}</tr>`, '')}`;
+}
+
+const $logArea = document.querySelector("#log");
+const $result = document.querySelector('#result');
+$logArea.addEventListener("change", (e) => {
+    $result.innerHTML = makeTableHTML(logToArray(e.target.value));
+});
+</script>
+  </body>
+</html> 
